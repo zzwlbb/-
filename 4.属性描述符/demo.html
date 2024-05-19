@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const Goods = {
+            pic:'.',
+            title:'..',
+            desc:'...',
+            sellNumber:1,
+            favorRate:2,
+            price:3
+        }
+        class UIGoods {
+            constructor(g){
+                g = {...g}
+                //冻结g里面的属性 防止改写
+                Object.freeze(g)
+
+                // this.data = g;
+                // 设置this里面的data属性 value就是传过来的g
+                Object.defineProperty(this,'data',{
+                    // value: g,
+                    // writable: false,  //不能被修改
+                    configurable: false, //不能修改本身
+                    get:function(){
+                        return g
+                    },
+                    set:function(val){
+                        throw new Error('该数据不能被赋值')
+                    }
+                })
+                let internalChooseValue = 0;
+                Object.defineProperty(this,'choose',{
+                    configurable:false,
+                    get:function(){
+                        return internalChooseValue;
+                    },
+                    set:function(val){
+                        if(val<0) {
+                            throw new Error('不能小于0')
+                        }
+                        if(typeof val !== 'number') {
+                            throw new Error('必须为数字')
+                        }
+                        const temp = parseInt(val)
+                        if(val !== temp) {
+                            throw new Error('不能为小数')
+                        }
+                        internalChooseValue = val;
+                    }
+                })
+                Object.defineProperty(this,'totalPrice',{
+                    //如果不写set就不会调用
+                    get:function(){ 
+                        return this.choose * this.data.price
+                    }
+                })
+                
+                //密封 UIGoods里面的方法
+                Object.seal(this);
+            };
+        }
+        const g = new UIGoods(Goods)
+        //可能随时被更改  数据不安全
+        // defineProperty 
+        // g.data = 'abc'
+        g.choose = 2;
+        console.log(g.totalPrice);
+    </script>
+</body>
+</html>

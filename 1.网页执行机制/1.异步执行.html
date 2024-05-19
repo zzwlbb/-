@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>我在</div>
+    <button>点击</button>
+    <a href=""></a>
+    <script>
+        const div=document.querySelector('div');
+        const btn =document.querySelector('button');
+        const a=document.querySelector('a');
+        function delay(duration){
+            const date = Date.now();
+            while(Date.now()-date<duration) {
+                
+            }
+            console.log(3);
+        }
+        delay(3000);
+        btn.addEventListener('click',function(){
+            //代码顺序确实执行了，但是页面渲染工作队列排在了delay()的后面
+            div.innerHTML = '成功'
+            a.innerHTML = '在的'
+            delay(3000);
+        });
+
+        setTimeout(()=>{
+            console.log(1);
+        },0)
+        console.log(2);
+       
+    </script>
+</body>
+</html>
